@@ -7,7 +7,7 @@
             <ul>
                 @foreach ($posts as $post)
                     <li>
-                        <a class="post-title" href="{{ $post->slug }}">{{ $post->title }}</a>
+                        <a class="post-title" href="blog/{{ $post->slug }}">{{ $post->title }}</a>
                         <div class="post-msg">
                             <span>发表于 {{ $post->created_at }} </span>
                             <span>分类于 <a href="#">编程</a></span>
