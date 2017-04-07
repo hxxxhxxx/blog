@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Tag;
 
 class TagController extends Controller
 {
@@ -14,7 +15,9 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::paginate(10);
+
+        return view('admin.tag.index', ['tags' => $tags]);
     }
 
     /**
@@ -24,7 +27,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.tag.create');
     }
 
     /**
@@ -35,7 +38,18 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // 标签名的验证规则
+        // bail 属性意味着如果第一个规则没有通过验证就 停止
+        $this->validate($request, [
+            'name' => 'bail|required|unique:tags|max:255'
+        ]);
+
+        $tag = new Tag();
+        $tag['name'] = $request->get('name');
+
+        $tag->save();
+
+        return redirect('admin/tags')->with('success', "标签 $tag->name 创建成功");
     }
 
     /**
@@ -57,7 +71,9 @@ class TagController extends Controller
      */
     public function edit($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+
+        return view('admin.tag.edit', ['tag' => $tag]);
     }
 
     /**
@@ -69,7 +85,12 @@ class TagController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        $tag->name = $request->get('name');
+        $tag->status = $request->get('status');
+        $tag->save();
+
+        return redirect('admin/tags')->with('success', "标签 $tag->name 修改成功");
     }
 
     /**
@@ -80,6 +101,9 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $tag = Tag::findOrFail($id);
+        $tag->delete();
+
+        return redirect('admin/tags')->with('success', "标签 $tag->name 删除成功");
     }
 }
