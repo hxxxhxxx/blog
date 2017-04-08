@@ -13,3 +13,9 @@ const { mix } = require('laravel-mix');
 
 mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css');
+
+mix.combine([
+    'public/css/app.css',
+    'node_modules/selectize/dist/css/selectize.css',
+    'node_modules/selectize/dist/css/selectize.bootstrap3.css'
+], 'public/css/app.css');

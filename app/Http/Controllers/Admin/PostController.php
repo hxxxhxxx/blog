@@ -8,6 +8,9 @@ use App\Http\Controllers\Controller;
 
 class PostController extends Controller
 {
+
+    protected $fields = ['title', 'slug', 'content'];
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +18,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::where('status', true)
+                ->orderBy('created_at', 'desc')
+                ->paginate(20);
 
         return view('admin.post.index', ['posts' => $posts]);
     }
@@ -27,7 +32,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.post.create');
     }
 
     /**
@@ -38,7 +43,20 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request->get('is_draft'));
+        $this->validate($request, [
+            'title' => 'required',
+            'slug' => 'bail|required|unique:posts',
+            'content' => 'required'
+        ]);
+
+        $post = new Post();
+        foreach ($this->fields as $field) {
+            $post->$field = $request->get($field);
+        }
+        $post->save();
+
+        return redirect('/admin/posts')->with('success', "文章 $post->title 添加成功");
     }
 
     /**

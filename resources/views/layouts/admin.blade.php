@@ -45,12 +45,20 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!-- Left Side Of Navbar -->
                 <ul class="nav navbar-nav">
-                    <li><a href="{{ url('admin/posts') }}">文章</a></li>
-                    <li><a href="{{ url('admin/tags') }}">标签</a></li>
+                    <li @if (Request::is('admin/posts*') || Request::is('admin')) class="active" @endif><a href="{{ url('admin/posts') }}">文章</a></li>
+                    <li @if (Request::is('admin/tags*')) class="active" @endif><a href="{{ url('admin/tags') }}">标签</a></li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="nav navbar-nav navbar-right">
+                    @if (Request::is('admin') || Request::is('admin/posts'))
+                        <li><a href="{{ url('/admin/posts/create') }}">写文章</a></li>
+                    @endif
+
+                    @if (Request::is('admin/tags'))
+                        <li><a href="{{ url('/admin/tags/create') }}">添加标签</a></li>
+                    @endif
+
                     <li><a href="{{ url('/') }}">返回前台</a></li>
                     <!-- Authentication Links -->
                     @if (Auth::guest())
@@ -67,7 +75,7 @@
                                     <a href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        Logout
+                                        退出
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -87,5 +95,7 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+@yield('scripts')
+
 </body>
 </html>
