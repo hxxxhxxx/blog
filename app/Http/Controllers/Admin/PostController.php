@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Post;
+use App\Tag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -18,9 +19,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('status', true)
-                ->orderBy('created_at', 'desc')
-                ->paginate(20);
+        $posts = Post::all();
 
         return view('admin.post.index', ['posts' => $posts]);
     }
@@ -32,7 +31,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.post.create');
+        $tags = Tag::all();
+
+        return view('admin.post.create', ['tags' => $tags]);
     }
 
     /**
@@ -43,18 +44,26 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->get('is_draft'));
         $this->validate($request, [
             'title' => 'required',
             'slug' => 'bail|required|unique:posts',
             'content' => 'required'
         ]);
 
-        $post = new Post();
+        $post = new Post;
         foreach ($this->fields as $field) {
             $post->$field = $request->get($field);
         }
+
+        // 如果是草稿，将 status 设为 false
+        if ($request->get('is_draft')) {
+            $post->status = false;
+        }
+
         $post->save();
+
+        // 同步标签
+        $post->syncTags($request->get('tags', []));
 
         return redirect('/admin/posts')->with('success', "文章 $post->title 添加成功");
     }
@@ -78,7 +87,10 @@ class PostController extends Controller
      */
     public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        $tags = $post->tags();
+
+        return view('admin.post.edit', ['post' => $post, 'tags' => $tags]);
     }
 
     /**
@@ -90,7 +102,29 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required',
+            'slug' => 'bail|required',
+            'content' => 'required'
+        ]);
+
+        $post = Post::findOrFail($id);
+        foreach ($this->fields as $field) {
+            $post->$field = $request->get($field);
+        }
+
+        // 如果是草稿，将 status 设为 false
+        if ($request->get('is_draft')) {
+            $post->status = false;
+        } else {
+            $post->status = true;
+        }
+
+        $post->save();
+        $post->syncTags($request->get('tags'));
+
+        return redirect('admin/posts')->with('success', "文章 $post->title 修改成功");
+
     }
 
     /**
@@ -101,6 +135,9 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+
+        return redirect('admin/posts')->with('success', "文章 $post->title 删除成功");
     }
 }

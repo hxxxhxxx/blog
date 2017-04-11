@@ -35,3 +35,9 @@ a {
 .post-detail {
     margin-top: 15px;
 }
+
+/*归档*/
+.archives > ul > li {
+    list-style-type: circle;
+    margin-bottom: 10px;
+}

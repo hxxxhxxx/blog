@@ -15,6 +15,8 @@ Auth::routes();
 
 Route::get('/', 'HomeController@index');
 Route::get('blog/{slug}', 'HomeController@showPost');
+Route::get('tags/{tag?}', 'HomeController@tags');
+Route::get('archives', 'HomeController@archives');
 
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => 'auth'], function () {

@@ -47,8 +47,8 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         <li><a href="{{ url('/') }}">首页</a></li>
-                        <li><a href="{{ url('#') }}">标签</a></li>
-                        <li><a href="{{ url('#') }}">归档</a></li>
+                        <li><a href="{{ url('tags') }}">标签</a></li>
+                        <li><a href="{{ url('archives') }}">归档</a></li>
                         <li><a href="{{ url('#') }}">关于</a></li>
                     </ul>
 
@@ -65,5 +65,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>

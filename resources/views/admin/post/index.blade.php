@@ -33,12 +33,12 @@
                 </td>
                 <td>{{ $post->updated_at }}</td>
                 <td>
-                    <a class="btn btn-primary btn-xs">编辑</a>
+                    <a class="btn btn-primary btn-xs" href="/admin/posts/{{ $post->id }}/edit">编辑</a>
                 </td>
             </tr>
         @endforeach
         </tbody>
     </table>
-    {!! $posts->render() !!}
+    {{--{!! $posts->render() !!}--}}
 </div>
 @endsection

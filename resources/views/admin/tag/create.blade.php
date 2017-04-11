@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="name" class="col-md-3 control-label">标签</label>
                 <div class="col-md-6">
-                    <input type="text" id="name" name="name" class="form-control" autofocus>
+                    <input type="text" id="name" name="name" class="form-control" autofocus="autofocus">
                 </div>
             </div>
 

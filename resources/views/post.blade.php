@@ -7,7 +7,11 @@
             <div class="post-title text-center">{{ $post->title }}</div>
             <div class="post-msg text-center">
                 <span>发表于 {{ $post->created_at }} </span>
-                <span>分类于 <a href="#">编程</a></span>
+                <span>分类于
+                    @foreach($post->tags as $tag)
+                        <a href="#">[ {{ $tag->name }} ]</a>
+                    @endforeach
+                </span>
             </div>
             <div class="post-content">
                 {!! nl2br(e($post->content)) !!}
